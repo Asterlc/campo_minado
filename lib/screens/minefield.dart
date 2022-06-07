@@ -20,13 +20,25 @@ class _MineFieldState extends State<MineField> {
     bombs: 3,
   );
 
-  _restartGame() {}
+  void _restartGame() {
+    setState(() {
+      _won = null;
+      _board.restartBoard();
+    });
+  }
 
   void _openGame(Field field) {
     setState(() {
       try {
         field.open();
-      } on ExplosionException {}
+
+        if (_board.solvedAll) {
+          _won = true;
+        }
+      } on ExplosionException {
+        _won = false;
+        _board.showBombs();
+      }
     });
   }
 
