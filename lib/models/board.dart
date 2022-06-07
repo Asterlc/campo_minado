@@ -12,6 +12,7 @@ class Board {
   Board({required this.lines, required this.columns, required this.bombs}) {
     _createFields();
     _relatedNeighbors();
+    _raffleBombs();
   }
 
   void restartBoard() {
@@ -45,14 +46,14 @@ class Board {
 
   void _raffleBombs() {
     int raffles = 0;
-    if (bombs < (lines * columns)) {
+    if (bombs > (lines * columns)) {
       return;
     }
 
     while (raffles < bombs) {
       int i = Random().nextInt(_fields.length);
 
-      if (_fields[i].miningGet) {
+      if (!_fields[i].miningGet) {
         raffles++;
         _fields[i].markMining();
       }

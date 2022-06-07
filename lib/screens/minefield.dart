@@ -1,49 +1,52 @@
 import 'package:campo_minado/components/field.widget.dart';
+import 'package:campo_minado/models/board.dart';
 import 'package:flutter/material.dart';
 import '../components/result.widget.dart';
 import '../models/field.dart';
 import '../models/explosion_exception.dart';
+import '../components/board.widget.dart';
 
-class MineField extends StatelessWidget {
+class MineField extends StatefulWidget {
+  @override
+  State<MineField> createState() => _MineFieldState();
+}
+
+class _MineFieldState extends State<MineField> {
   // const MyWidget({Key? key}) : super(key: key);
+  bool? _won;
+  Board _board = Board(
+    lines: 12,
+    columns: 12,
+    bombs: 3,
+  );
 
-  // _restartGame() {
-  //   print('Restart game');
-  //   return;
-  // }
+  _restartGame() {}
 
   void _openGame(Field field) {
-    print('open game');
+    setState(() {
+      try {
+        field.open();
+      } on ExplosionException {}
+    });
   }
 
   void _changeFieldMark(Field field) {
-    print('change marks');
+    setState(() {
+      field.changeMark();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Field testField2 = Field(line: 1, column: 0);
-    testField2.markMining();
-
-    Field testField = Field(line: 0, column: 0);
-
-    testField.addNeighbor(testField2);
-
-    try {
-      // testField.markMining();
-      testField.changeMark();
-      // testField.open();
-    } on ExplosionException {}
-
     return MaterialApp(
         home: Scaffold(
       appBar: ResultWidget(
-        winner: false,
-        onRestart: () => {{}},
+        winner: _won,
+        onRestart: _restartGame,
       ),
       body: Container(
-        child: FieldWidget(
-          field: testField,
+        child: BoardWidget(
+          board: _board,
           onOpen: _openGame,
           onChangeMark: _changeFieldMark,
         ),
